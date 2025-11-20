@@ -1,0 +1,45 @@
+{
+  "name": "mindcare-backend",
+  "version": "1.0.0",
+  "description": "Backend MindCare 2025 – Hệ thống tư vấn tâm lý trực tuyến hoàn chỉnh",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  },
+  "keywords": [
+    "mindcare",
+    "psychology",
+    "mental-health",
+    "gemini-ai",
+    "video-call",
+    "nodejs",
+    "express",
+    "mongodb"
+  ],
+  "author": "MindCare Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.21.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.4.0",
+    "express-validator": "^7.2.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.7.0",
+    "nodemailer": "^6.9.14",
+    "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7",
+    "eslint": "^8.57.0",
+    "prettier": "^3.3.3"
+  }
+}
