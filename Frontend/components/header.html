@@ -1,0 +1,146 @@
+<!-- /components/header.html -->
+<header class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top border-bottom border-success border-3">
+  <div class="container-fluid px-4">
+
+    <!-- Logo + Brand -->
+    <a class="navbar-brand d-flex align-items-center fw-bold text-success" href="/index.html">
+      <img src="/img/logo-mindcare.png" alt="MindCare Logo" width="40" height="40" class="me-2">
+      <span class="fs-4">MindCare</span>
+    </a>
+
+    <!-- Mobile Toggle -->
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Navbar Links -->
+    <div class="collapse navbar-collapse" id="mainNavbar">
+      <ul class="navbar-nav mx-auto text-center text-lg-start">
+        <li class="nav-item mx-lg-2">
+          <a class="nav-link px-3 py-2 rounded-3 transition" href="/index.html">Trang chủ</a>
+        </li>
+        <li class="nav-item mx-lg-2">
+          <a class="nav-link px-3 py-2 rounded-3 transition" href="/diagnosis.html">Chẩn đoán</a>
+        </li>
+        <li class="nav-item mx-lg-2">
+          <a class="nav-link px-3 py-2 rounded-3 transition" href="/chat.html">Chat AI</a>
+        </li>
+        <li class="nav-item mx-lg-2">
+          <a class="nav-link px-3 py-2 rounded-3 transition" href="/appointment.html">Đặt lịch</a>
+        </li>
+        <li class="nav-item mx-lg-2">
+          <a class="nav-link px-3 py-2 rounded-3 transition" href="/history.html">Lịch sử</a>
+        </li>
+      </ul>
+
+      <!-- User Menu (phải) -->
+      <ul class="navbar-nav ms-auto align-items-center">
+        <!-- Khi chưa đăng nhập -->
+        <div id="guest-menu" class="d-flex gap-2 flex-column flex-lg-row">
+          <a href="/login.html" class="btn btn-outline-success rounded-pill px-4">Đăng nhập</a>
+          <a href="/register.html" class="btn btn-success rounded-pill px-4">Đăng ký</a>
+        </div>
+
+        <!-- Khi đã đăng nhập -->
+        <li class="nav-item dropdown d-none" id="user-menu">
+          <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+            <img src="/img/user-avatar.png" id="header-avatar" width="38" height="38" class="rounded-circle border border-success border-2 me-2" alt="Avatar">
+            <span id="header-user-name" class="fw-semibold text-dark">Người dùng</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2">
+            <li>
+              <div class="dropdown-item-text px-3 py-2">
+                <small class="text-muted">Xin chào,</small><br>
+                <strong id="dropdown-user-name">Người dùng</strong>
+              </div>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="/profile.html">
+              <i class="fas fa-user me-2 text-success"></i> Hồ sơ cá nhân
+            </a></li>
+            <li><a class="dropdown-item" href="/history.html">
+              <i class="fas fa-history me-2 text-success"></i> Lịch sử chẩn đoán
+            </a></li>
+            <li><a class="dropdown-item" href="/appointment.html">
+              <i class="fas fa-calendar-check me-2 text-success"></i> Lịch hẹn của tôi
+            </a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="#" onclick="logout()">
+              <i class="fas fa-sign-out-alt me-2"></i> Đăng xuất
+            </a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</header>
+
+<!-- CSS tinh chỉnh (thêm vào main.css hoặc <style> trong head) -->
+<style>
+  .transition {
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  .transition:hover {
+    color: #22c55e !important;
+    background-color: rgba(34, 197, 94, 0.1);
+  }
+  .transition::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 3px;
+    bottom: 0;
+    left: 50%;
+    background-color: #22c55e;
+    transition: all 0.3s ease;
+  }
+  .transition:hover::after {
+    width: 100%;
+    left: 0;
+  }
+  .navbar .btn {
+    font-weight: 600;
+    min-width: 120px;
+  }
+  @media (max-width: 991px) {
+    #guest-menu { order: 1; margin-top: 1rem; }
+    #user-menu { order: 0; }
+  }
+</style>
+
+<!-- SCRIPT TỰ ĐỘNG HIỂN THỊ MENU ĐÚNG THEO TRẠNG THÁI ĐĂNG NHẬP -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const token = localStorage.getItem('token');
+    const userName = localStorage.getItem('userName') || 'Người dùng';
+    const userAvatar = localStorage.getItem('userAvatar') || '/img/user-avatar.png';
+
+    const guestMenu = document.getElementById('guest-menu');
+    const userMenu = document.getElementById('user-menu');
+    const headerName = document.getElementById('header-user-name');
+    const dropdownName = document.getElementById('dropdown-user-name');
+    const avatarImg = document.getElementById('header-avatar');
+
+    if (token) {
+      // Đã đăng nhập → Ẩn nút đăng nhập, hiện menu user
+      guestMenu.classList.add('d-none');
+      userMenu.classList.remove('d-none');
+      
+      headerName.textContent = userName.split(' ').pop(); // Chỉ lấy tên cuối
+      dropdownName.textContent = userName;
+      avatarImg.src = userAvatar;
+    } else {
+      // Chưa đăng nhập
+      guestMenu.classList.remove('d-none');
+      userMenu.classList.add('d-none');
+    }
+  });
+
+  // Hàm logout (đã có sẵn ở các trang)
+  function logout() {
+    localStorage.clear();
+    sessionStorage.clear();
+    window.location.href = '/login.html';
+  }
+</script>

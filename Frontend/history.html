@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lịch sử chẩn đoán - MindCare</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet"/>
+  <link href="/css/modern.css" rel="stylesheet"/>
+  <link href="/css/animation.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --primary: #6d28d9;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --light: #f8fafc;
+      --calm: #e0e7ff;
+    }
+    body {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 100%);
+      min-height: 100vh;
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+    }
+    .page-header {
+      background: linear-gradient(135deg, var(--primary), #5b21b6);
+      color: white;
+      border-radius: 32px;
+      padding: 3.5rem 2.5rem;
+      box-shadow: 0 30px 80px rgba(109,40,217,0.35);
+      margin-bottom: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .page-header::before {
+      content: '';
+      position: absolute;
+      top: -60%; left: -60%;
+      width: 220%; height: 220%;
+      background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+      animation: float 25s infinite linear;
+    }
+    @keyframes float {
+      0% { transform: translate(0,0) rotate(0deg); }
+      100% { transform: translate(60px,60px) rotate(360deg); }
+    }
+    .history-card {
+      background: white;
+      border-radius: 28px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+      overflow: hidden;
+      transition: all 0.4s ease;
+    }
+    .history-card:hover {
+      transform: translateY(-15px);
+      box-shadow: 0 35px 90px rgba(109,40,217,0.25);
+    }
+    .history-item {
+      padding: 2rem;
+      border-bottom: 1px solid #f1f5f9;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .history-item:last-child { border-bottom: none; }
+    .history-item:hover {
+      background: linear-gradient(135deg, #f8faff 0%, #f0f4ff 100%);
+    }
+    .history-date {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.8rem;
+    }
+    .score-circle-sm {
+      width: 90px; height: 90px;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: white;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+    }
+    .level-normal { background: linear-gradient(135deg, #10b981, #34d399); }
+    .level-mild { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+    .level-moderate { background: linear-gradient(135deg, #fb923c, #f97316); }
+    .level-severe { background: linear-gradient(135deg, #ef4444, #dc2626); }
+    .level-badge {
+      padding: 0.6rem 1.4rem;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .empty-state {
+      padding: 5rem 2rem;
+      text-align: center;
+      color: #64748b;
+    }
+    .empty-state i {
+      font-size: 5rem;
+      color: #cbd5e1;
+      margin-bottom: 1.5rem;
+    }
+    .btn-new-test {
+      background: linear-gradient(135deg, var(--primary), #5b21b6);
+      border: none;
+      border-radius: 60px;
+      padding: 1.2rem 4rem;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: white;
+      box-shadow: 0 15px 40px rgba(109,40,217,0.4);
+      transition: all 0.4s ease;
+    }
+    .btn-new-test:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 25px 60px rgba(109,40,217,0.5);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar Patient -->
+  <div w3-include-html="/components/sidebar.html"></div>
+
+  <!-- Main Content -->
+  <div class="main-content p-4 p-md-5">
+    <div class="container">
+
+      <!-- Header -->
+      <div class="page-header text-center text-md-start">
+        <h1 class="display-4 fw-bold mb-3">
+          Hành trình chữa lành của bạn
+        </h1>
+        <p class="lead fs-4 opacity-95">
+          Mỗi lần làm bài là một lần bạn đang tự yêu thương chính mình
+        </p>
+      </div>
+
+      <!-- History List -->
+      <div class="history-card">
+        <div id="historyList" class="p-4">
+          <div class="text-center py-5">
+            <div class="spinner-border text-primary" style="width: 4rem; height: 4rem;"></div>
+            <h4 class="mt-4 text-muted">Đang tải hành trình của bạn...</h4>
+          </div>
+        </div>
+      </div>
+
+      <!-- Button làm bài mới -->
+      <div class="text-center mt-5">
+        <a href="diagnosis.html" class="btn btn-new-test shadow-lg">
+          Làm bài chẩn đoán mới
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/include.js"></script>
+  <script src="/js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (typeof initPage === 'function') await initPage();
+
+      const historyList = document.getElementById('historyList');
+
+      const getLevelInfo = (score, type) => {
+        if (type === 'phq9') {
+          if (score <= 4)  return { level: "Bình thường", color: "level-normal", icon: "smile-beam" };
+          if (score <= 9)  return { level: "Trầm cảm nhẹ", color: "level-mild", icon: "meh" };
+          if (score <= 14) return { level: "Trầm cảm trung bình", color: "level-moderate", icon: "frown" };
+          return { level: "Trầm cảm nặng", color: "level-severe", icon: "sad-tear" };
+        } else {
+          if (score <= 4)  return { level: "Không lo âu", color: "level-normal", icon: "laugh" };
+          if (score <= 9)  return { level: "Lo âu nhẹ", color: "level-mild", icon: "meh" };
+          if (score <= 14) return { level: "Lo âu trung bình", color: "level-moderate", icon: "frown" };
+          return { level: "Lo âu nặng", color: "level-severe", icon: "dizzy" };
+        }
+      };
+
+      const loadHistory = async () => {
+        const token = localStorage.getItem('token');
+        try {
+          const res = await fetch('http://localhost:5001/api/diagnosis/history', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+
+          if (!res.ok) throw new Error('Lỗi tải dữ liệu');
+
+          const data = await res.json();
+
+          if (!data.history || data.history.length === 0) {
+            historyList.innerHTML = `
+              <div class="empty-state">
+                <i class="fas fa-heart-broken"></i>
+                <h3 class="mt-4 text-muted">Chưa có kết quả nào</h3>
+                <p class="lead">Hãy bắt đầu hành trình chăm sóc tâm hồn của bạn ngay hôm nay</p>
+              </div>
+            `;
+            return;
+          }
+
+          // Sắp xếp mới nhất trước
+          const sorted = data.history.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+          historyList.innerHTML = sorted.map(item => {
+            const date = new Date(item.date).toLocaleDateString('vi-VN', {
+              weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+            });
+
+            const phq = getLevelInfo(item.phq9, 'phq9');
+            const gad = getLevelInfo(item.gad7, 'gad7');
+
+            return `
+              <div class="history-item">
+                <div class="row align-items-center g-4">
+                  <div class="col-md-3">
+                    <div class="history-date">
+                      ${date.charAt(0).toUpperCase() + date.slice(1)}
+                    </div>
+                  </div>
+                  <div class="col-md-9">
+                    <div class="row g-4 text-center text-md-start">
+                      <div class="col-6 col-md-5">
+                        <div class="score-circle-sm ${phq.color}">
+                          <div>${item.phq9}</div>
+                          <small class="fs-6">PHQ-9</small>
+                        </div>
+                        <h5 class="mt-3 fw-bold text-danger">${phq.level}</h5>
+                      </div>
+                      <div class="col-6 col-md-5">
+                        <div class="score-circle-sm ${gad.color}">
+                          <div>${item.gad7}</div>
+                          <small class="fs-6">GAD-7</small>
+                        </div>
+                        <h5 class="mt-3 fw-bold text-danger">${gad.level}</h5>
+                      </div>
+                      <div class="col-12 col-md-2 d-flex align-items-center justify-content-center mt-3 mt-md-0">
+                        <div class="text-center">
+                          <i class="fas fa-heart text-danger fs-1"></i>
+                          <small class="d-block text-muted mt-2">Bạn đang cố gắng</small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('');
+        } catch (err) {
+          console.error(err);
+          historyList.innerHTML = `
+            <div class="text-center py-5 text-danger">
+              <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+              <h4>Không thể tải lịch sử</h4>
+              <p>Vui lòng kiểm tra kết nối hoặc thử lại sau</p>
+            </div>
+          `;
+        }
+      };
+
+      // Load ngay khi mở trang
+      await loadHistory();
+    });
+  </script>
+</body>
+</html>

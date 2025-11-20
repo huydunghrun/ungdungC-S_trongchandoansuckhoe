@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Đặt lịch tư vấn - MindCare</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet"/>
+  <link href="/css/modern.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --primary: #10b981;     /* xanh lá chữa lành */
+      --accent: #34d399;
+      --light: #f0fdf4;
+      --warm: #fef3c7;
+    }
+    body {
+      background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+      min-height: 100vh;
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+    }
+    .appointment-header {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      border-radius: 28px;
+      padding: 3.5rem 2rem;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(16,185,129,0.3);
+      margin-bottom: 3rem;
+    }
+    .step-card {
+      background: white;
+      border-radius: 24px;
+      padding: 2.5rem;
+      box-shadow: 0 15px 45px rgba(0,0,0,0.08);
+      border: none;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .step-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 6px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    .step-card:hover {
+      transform: translateY(-12px);
+      box-shadow: 0 25px 60px rgba(16,185,129,0.2);
+    }
+    .doctor-card {
+      background: white;
+      border-radius: 20px;
+      padding: 1.8rem;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      cursor: pointer;
+      height: 100%;
+    }
+    .doctor-card:hover, .doctor-card.selected {
+      border-color: var(--primary);
+      transform: translateY(-8px);
+      box-shadow: 0 15px 40px rgba(16,185,129,0.2);
+    }
+    .doctor-avatar {
+      width: 90px; height: 90px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 5px solid var(--light);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    .form-control, .form-select {
+      border-radius: 16px;
+      padding: 1rem 1.4rem;
+      font-size: 1.1rem;
+      border: 2px solid #e5e7eb;
+      transition: all 0.3s ease;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(16,185,129,0.2);
+    }
+    .btn-book {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border: none;
+      border-radius: 50px;
+      padding: 1.2rem 3.5rem;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: white;
+      box-shadow: 0 12px 35px rgba(16,185,129,0.4);
+      transition: all 0.4s ease;
+    }
+    .btn-book:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 50px rgba(16,185,129,0.5);
+    }
+    .note-box {
+      background: var(--warm);
+      border-left: 6px solid #f59e0b;
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-top: 2rem;
+    }
+    .calendar-icon {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--primary);
+      font-size: 1.4rem;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div w3-include-html="/components/sidebar.html"></div>
+
+  <!-- Main Content -->
+  <div class="main-content p-4 p-md-5">
+    <div class="container">
+
+      <!-- Header -->
+      <div class="appointment-header">
+        <h1 class="display-5 fw-bold mb-3">
+          Đặt lịch tư vấn tâm lý
+        </h1>
+        <p class="lead mb-0 opacity-90">
+          Chỉ 3 bước đơn giản – Bạn sẽ sớm nhận được sự hỗ trợ cần thiết
+        </p>
+      </div>
+
+      <form id="appointmentForm">
+        <div class="row g-5">
+
+          <!-- Bước 1: Chọn bác sĩ -->
+          <div class="col-lg-10 mx-auto">
+            <div class="step-card">
+              <h3 class="fw-bold text-success mb-4">
+                <span class="badge bg-success rounded-pill me-3">1</span>
+                Chọn bác sĩ phù hợp với bạn
+              </h3>
+              <div class="row g-4" id="doctorsContainer">
+                <div class="text-center py-5">
+                  <div class="spinner-border text-success" style="width: 4rem; height: 4rem;"></div>
+                  <p class="mt-4 text-muted fs-5">Đang tải danh sách bác sĩ...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bước 2: Chọn ngày giờ & lý do -->
+          <div class="col-lg-10 mx-auto">
+            <div class="step-card">
+              <h3 class="fw-bold text-success mb-4">
+                <span class="badge bg-success rounded-pill me-3">2</span>
+                Chọn thời gian và chia sẻ lý do
+              </h3>
+              <div class="row g-4">
+                <div class="col-md-6">
+                  <label class="form-label fw-bold text-dark">Ngày tư vấn</label>
+                  <div class="position-relative">
+                    <input type="date" class="form-control" id="appointmentDate" required>
+                    <i class="fas fa-calendar calendar-icon"></i>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-bold text-dark">Giờ tư vấn</label>
+                  <select class="form-select" id="appointmentTime" required>
+                    <option value="">Chọn khung giờ</option>
+                    <option value="08:00">08:00 - 09:00</option>
+                    <option value="09:30">09:30 - 10:30</option>
+                    <option value="14:00">14:00 - 15:00</option>
+                    <option value="15:30">15:30 - 16:30</option>
+                    <option value="19:00">19:00 - 20:00</option>
+                  </select>
+                </div>
+                <div class="col-12">
+                  <label class="form-label fw-bold text-dark">Lý do tư vấn (không bắt buộc)</label>
+                  <textarea class="form-control" rows="4" id="reason" placeholder="Ví dụ: Căng thẳng công việc, lo âu kéo dài, khó ngủ..."></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bước 3: Xác nhận -->
+          <div class="col-lg-10 mx-auto text-center">
+            <div class="step-card p-5">
+              <h3 class="fw-bold text-success mb-4">
+                <span class="badge bg-success rounded-pill me-3">3</span>
+                Hoàn tất đặt lịch
+              </h3>
+              <p class="lead text-muted mb-4">
+                Sau khi đặt lịch, bạn sẽ được chuyển đến thanh toán an toàn qua Momo hoặc VNPay
+              </p>
+              <button type="submit" class="btn btn-book">
+                Xác nhận đặt lịch ngay
+              </button>
+            </div>
+
+            <div class="note-box">
+              <h5 class="text-warning fw-bold mb-3">Chúng tôi luôn ở đây vì bạn</h5>
+              <p class="mb-0">
+                Mọi thông tin bạn chia sẻ đều được <strong>mã hóa và bảo mật tuyệt đối</strong>. 
+                Bác sĩ sẽ chuẩn bị kỹ lưỡng để buổi tư vấn mang lại giá trị tốt nhất cho bạn.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/include.js"></script>
+  <script src="/js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (typeof initPage === 'function') await initPage();
+
+      // Set ngày min = hôm nay
+      document.getElementById('appointmentDate').min = new Date().toISOString().split('T')[0];
+
+      // TẢI DANH SÁCH BÁC SĨ TỪ BACKEND CỔNG 5001
+      const loadDoctors = async () => {
+        try {
+          const res = await fetch('http://localhost:5001/api/doctors');
+          const doctors = await res.json();
+
+          const container = document.getElementById('doctorsContainer');
+          container.innerHTML = '';
+
+          if (doctors.length === 0) {
+            container.innerHTML = '<p class="text-center text-muted">Hiện chưa có bác sĩ nào. Vui lòng quay lại sau ❤️</p>';
+            return;
+          }
+
+          doctors.forEach(doc => {
+            const col = document.createElement('div');
+            col.className = 'col-md-4';
+            col.innerHTML = `
+              <div class="doctor-card" onclick="selectDoctor('${doc._id}', this)">
+                <img src="${doc.avatar || '/img/user-avatar.png'}" alt="${doc.name}" class="doctor-avatar mb-3">
+                <h5 class="fw-bold">${doc.name}</h5>
+                <p class="text-success small">${doc.specialty || 'Tâm lý lâm sàng'}</p>
+                <small class="text-muted">Đánh giá: 4.9/5</small>
+              </div>
+              <input type="radio" name="doctorId" value="${doc._id}" class="d-none" required>
+            `;
+            container.appendChild(col);
+          });
+        } catch (err) {
+          document.getElementById('doctorsContainer').innerHTML = 
+            '<p class="text-center text-danger">Không tải được danh sách bác sĩ. Backend đang chạy chưa?</p>';
+          console.error('Lỗi tải bác sĩ:', err);
+        }
+      };
+
+      window.selectDoctor = function(id, element) {
+        document.querySelectorAll('.doctor-card').forEach(c => c.classList.remove('selected'));
+        element.classList.add('selected');
+        element.closest('.col-md-4').querySelector('input').checked = true;
+      };
+
+      // GỬI ĐẶT LỊCH LÊN BACKEND CỔNG 5001
+      document.getElementById('appointmentForm').onsubmit = async (e) => {
+        e.preventDefault();
+
+        const doctorId = document.querySelector('input[name="doctorId"]:checked')?.value;
+        const date = document.getElementById('appointmentDate').value;
+        const time = document.getElementById('appointmentTime').value;
+        const reason = document.getElementById('reason').value.trim();
+
+        if (!doctorId || !date || !time) {
+          alert('Vui lòng chọn bác sĩ, ngày và giờ tư vấn');
+          return;
+        }
+
+        const token = localStorage.getItem('token');
+        try {
+          const res = await fetch('http://localhost:5001/api/appointments', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ doctorId, date, time, reason })
+          });
+
+          const data = await res.json();
+
+          if (res.ok) {
+            alert('Đặt lịch thành công! Chuyển sang thanh toán...');
+            window.location.href = `payment.html?appointmentId=${data.appointment._id}`;
+          } else {
+            alert(data.message || 'Đặt lịch thất bại');
+          }
+        } catch (err) {
+          alert('Không kết nối được với máy chủ. Backend đang chạy ở cổng 5001 chưa?');
+        }
+      };
+
+      // Tự động tải bác sĩ khi vào trang
+      loadDoctors();
+    });
+  </script>
+</body>
+</html>

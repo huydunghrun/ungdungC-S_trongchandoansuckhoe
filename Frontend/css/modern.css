@@ -1,0 +1,297 @@
+/* ============================================================= */
+/*                  MINDCARE 2025 – CHỮA LÀNH TỪ TÂM               */
+/*               Giao diện hiện đại – ấm áp – chuyên nghiệp       */
+/* ============================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Nunito:wght@600;700;800&display=swap');
+
+:root {
+  /* MÀU CHỮA LÀNH CHỦ ĐẠO – XANH LÁ TƯƠI MỚI */
+  --mindcare-green: #22c55e;
+  --mindcare-green-light: #86efac;
+  --mindcare-green-dark: #16a34a;
+  --mindcare-gradient: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  --mindcare-gradient-soft: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%);
+
+  /* MÀU PHỤ */
+  --primary: #4361ee;
+  --success: #22c55e;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --info: #0ea5e9;
+  --dark: #0f172a;
+  --gray-100: #f8fafc;
+  --gray-200: #e2e8f0;
+  --gray-300: #cbd5e1;
+  --gray-600: #475569;
+  --gray-800: #1e293b;
+  --gray-900: #0f172a;
+
+  /* Hiệu ứng */
+  --shadow-sm: 0 4px 15px rgba(34, 197, 94, 0.12);
+  --shadow-md: 0 10px 30px rgba(34, 197, 94, 0.18);
+  --shadow-lg: 0 20px 50px rgba(34, 197, 94, 0.22);
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: all 0.2s ease;
+}
+
+/* ============================================================= */
+/*                           GLOBAL                              */
+/* ============================================================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--mindcare-gradient-soft);
+  color: var(--gray-800);
+  line-height: 1.6;
+  min-height: 100vh;
+  background-attachment: fixed;
+}
+
+/* ============================================================= */
+/*                         TYPOGRAPHY                            */
+/* ============================================================= */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--gray-900);
+}
+
+.display-4 {
+  font-size: 3.5rem;
+  background: var(--mindcare-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================================= */
+/*                        SIDEBAR ĐẸP NHẤT                        */
+/* ============================================================= */
+.sidebar {
+  width: 280px;
+  min-height: 100vh;
+  background: var(--mindcare-gradient);
+  color: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1030;
+  box-shadow: var(--shadow-lg);
+  overflow-y: auto;
+  transition: var(--transition);
+}
+
+.sidebar-header {
+  padding: 2rem 1.5rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+
+.sidebar-header h3 {
+  font-size: 2rem;
+  font-weight: 900;
+  margin: 0;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.sidebar-header small {
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+/* Profile Card trong Sidebar */
+.profile-card {
+  padding: 1.8rem 1.5rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  transition: var(--transition);
+}
+
+.profile-card img {
+  width: 90px;
+  height: 90px;
+  border: 4px solid rgba(255,255,255,0.3);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+  transition: var(--transition);
+}
+
+.profile-card:hover img {
+  transform: scale(1.08);
+  border-color: white;
+}
+
+.profile-card h6 {
+  margin: 12px 0 4px;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.profile-card small {
+  opacity: 0.85;
+  font-size: 0.9rem;
+}
+
+/* Nav Links */
+.sidebar .nav-link {
+  color: rgba(255,255,255,0.85);
+  padding: 14px 20px;
+  margin: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.sidebar .nav-link::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: rgba(255,255,255,0.15);
+  transition: var(--transition);
+}
+
+.sidebar .nav-link:hover::before,
+.sidebar .nav-link.active::before {
+  left: 0;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+  background: rgba(255,255,255,0.2);
+  color: white;
+  transform: translateX(8px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.sidebar .nav-link i {
+  width: 28px;
+  font-size: 1.15rem;
+  text-align: center;
+}
+
+/* Logout Button */
+.sidebar .logout-btn {
+  background: rgba(239, 68, 68, 0.2) !important;
+  border: 1px solid rgba(239, 68, 68, 0.4) !important;
+}
+
+.sidebar .logout-btn:hover {
+  background: #ef4444 !important;
+  transform: translateX(0) !important;
+}
+
+/* ============================================================= */
+/*                         MAIN CONTENT                          */
+/* ============================================================= */
+.main-content {
+  margin-left: 280px;
+  padding: 2.5rem;
+  min-height: 100vh;
+}
+
+/* Card chữa lành */
+.card {
+  border: none;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: white;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  backdrop-filter: blur(10px);
+}
+
+.card:hover {
+  transform: translateY(-12px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Button MindCare */
+.btn-mindcare {
+  background: var(--mindcare-gradient);
+  border: none;
+  color: white;
+  padding: 12px 32px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1.05rem;
+  box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3);
+  transition: var(--transition);
+}
+
+.btn-mindcare:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 15px 35px rgba(34, 197, 94, 0.4);
+  color: white;
+}
+
+/* Chat bubbles – ấm áp nhất */
+.user-message {
+  background: var(--mindcare-gradient);
+  color: white;
+  align-self: flex-end;
+  border-radius: 20px 20px 4px 20px;
+  padding: 12px 18px;
+  max-width: 80%;
+  box-shadow: 0 4px 15px rgba(34, 197, 94, 0.25);
+}
+
+.ai-message {
+  background: white;
+  color: #1e293b;
+  align-self: flex-start;
+  border-radius: 20px 20px 20px 4px;
+  padding: 14px 20px;
+  max-width: 80%;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+  position: relative;
+}
+
+.ai-message::before {
+  content: 'MindCare AI';
+  position: absolute;
+  top: -10px;
+  left: 16px;
+  background: var(--mindcare-green);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Glassmorphism */
+.glass {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: var(--shadow-md);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  .main-content {
+    margin-left: 0;
+  }
+}

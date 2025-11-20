@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Thanh toán buổi tư vấn • MindCare – Chữa lành từ tâm</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet"/>
+  <link href="/css/modern.css" rel="stylesheet"/>
+  <link href="/css/animation.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --primary: #f97316;
+      --secondary: #ea580c;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --light: #fff7ed;
+      --warm: #fed7aa;
+      --danger: #dc2626;
+    }
+    body {
+      background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 40%, #fecaca 100%);
+      min-height: 100vh;
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      position: relative;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: radial-gradient(circle, rgba(251,146,60,0.15) 0%, transparent 70%);
+      animation: float 40s infinite linear;
+      pointer-events: none;
+    }
+    @keyframes float {
+      0% { transform: translate(0,0) rotate(0deg); }
+      100% { transform: translate(100px,100px) rotate(360deg); }
+    }
+    .payment-container {
+      max-width: 1150px;
+      margin: 3rem auto;
+      padding: 0 1rem;
+    }
+    .payment-card {
+      background: white;
+      border-radius: 38px;
+      padding: 4.5rem 4rem;
+      box-shadow: 
+        0 35px 100px rgba(251,146,60,0.3),
+        0 0 0 1px rgba(255,255,255,0.5);
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(15px);
+    }
+    .payment-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 10px;
+      background: linear-gradient(90deg, #fb923c, #f97316, #ea580c, #dc2626);
+    }
+    .header-icon {
+      width: 130px; height: 130px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      box-shadow: 0 25px 60px rgba(249,115,22,0.4);
+      animation: pulse 3s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    .header-title {
+      font-size: 3.2rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #ea580c, #dc2626);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .amount-display {
+      font-size: 5.5rem;
+      font-weight: 900;
+      color: #dc2626;
+      text-align: center;
+      text-shadow: 0 8px 25px rgba(220,38,38,0.35);
+      letter-spacing: -2px;
+    }
+    .amount-currency {
+      font-size: 2rem;
+      vertical-align: super;
+      margin-left: 10px;
+      color: #991b1b;
+    }
+    .method-card {
+      background: linear-gradient(135deg, #fffbf7, #fff7ed);
+      border: 4px solid transparent;
+      border-radius: 32px;
+      padding: 3.5rem 2.5rem;
+      text-align: center;
+      transition: all 0.5s ease;
+      height: 100%;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .method-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: linear-gradient(135deg, transparent, rgba(251,146,60,0.05));
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .method-card:hover::after, .method-card.selected::after {
+      opacity: 1;
+    }
+    .method-card:hover, .method-card.selected {
+      border-color: var(--primary);
+      transform: translateY(-20px) scale(1.03);
+      box-shadow: 0 35px 80px rgba(251,146,60,0.35);
+    }
+    .method-card img.logo {
+      height: 90px;
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1));
+      margin-bottom: 1.8rem;
+    }
+    .account-number {
+      font-size: 2.6rem;
+      font-weight: 900;
+      letter-spacing: 6px;
+      color: #7c2d12;
+      background: linear-gradient(135deg, #fed7aa, #fecaca);
+      padding: 1.3rem 2.5rem;
+      border-radius: 24px;
+      display: inline-block;
+      margin: 1.8rem 0;
+      box-shadow: 0 10px 30px rgba(254,215,170,0.4);
+    }
+    .qr-code {
+      width: 260px;
+      height: 260px;
+      border: 16px solid white;
+      border-radius: 28px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+      margin: 2rem auto;
+      transition: transform 0.4s;
+    }
+    .method-card:hover .qr-code {
+      transform: scale(1.05);
+    }
+    .btn-complete {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border: none;
+      border-radius: 70px;
+      padding: 1.6rem 5rem;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: white;
+      box-shadow: 0 25px 60px rgba(249,115,22,0.45);
+      transition: all 0.5s ease;
+      text-transform: none;
+    }
+    .btn-complete:hover {
+      transform: translateY(-12px) scale(1.05);
+      box-shadow: 0 40px 90px rgba(249,115,22,0.6);
+    }
+    .guide-box {
+      background: linear-gradient(135deg, #fffbeb, #fef3c7);
+      border: 3px solid #fbbf24;
+      border-radius: 32px;
+      padding: 3rem;
+      margin-top: 4rem;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(251,191,36,0.2);
+    }
+    .guide-box i {
+      font-size: 3rem;
+      color: #d97706;
+      margin-bottom: 1rem;
+    }
+    @media (max-width: 992px) {
+      .payment-card { padding: 3rem 2rem; }
+      .header-title { font-size: 2.6rem; }
+      .amount-display { font-size: 4.2rem; }
+      .method-card { padding: 2.5rem 2rem; }
+      .qr-code { width: 220px; height: 220px; }
+    }
+    @media (max-width: 576px) {
+      .header-title { font-size: 2.2rem; }
+      .amount-display { font-size: 3.5rem; }
+      .account-number { font-size: 2rem; letter-spacing: 3px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar Patient -->
+  <div w3-include-html="/components/sidebar.html"></div>
+
+  <!-- Main Content -->
+  <div class="main-content p-4 p-md-5">
+    <div class="payment-container">
+
+      <div class="payment-card text-center">
+
+        <!-- Header cảm xúc -->
+        <div class="header-icon">
+          <i class="fas fa-heart text-white fa-4x"></i>
+        </div>
+        <h1 class="header-title">Thanh toán buổi tư vấn tâm lý</h1>
+        <p class="lead fs-3 text-muted mb-4">
+          Gói tư vấn 1-1 với chuyên gia • 30 phút • Trị giá vô cùng lớn cho tâm hồn bạn
+        </p>
+        <div class="amount-display">
+          350.000<span class="amount-currency">₫</span>
+        </div>
+        <p class="text-success fs-4 fw-bold mt-3">Bạn đang đầu tư cho chính sự bình yên của mình</p>
+
+        <!-- Phương thức thanh toán -->
+        <div class="row g-5 justify-content-center mt-5">
+
+          <!-- Momo -->
+          <div class="col-lg-5">
+            <div class="method-card selected" onclick="selectMethod(this, 'momo')">
+              <img src="/images/momo.png" alt="Momo" class="logo">
+              <h4 class="fw-bold text-danger mt-3">Thanh toán qua Momo</h4>
+              <div class="account-number">0356 484 203</div>
+              <p class="text-muted mb-2">
+                Chủ tài khoản: <strong class="text-danger">Đỗ Huy Dũng</strong>
+              </p>
+              <p class="text-success fw-bold mb-4">
+                Nội dung: <span class="text-primary">Họ tên + SĐT</span>
+              </p>
+              <img src="/images/qr-momo.jpg" alt="QR Momo" class="qr-code">
+              <p class="text-success fw-bold fs-5">Quét mã để thanh toán ngay</p>
+            </div>
+          </div>
+
+          <!-- Ngân hàng -->
+          <div class="col-lg-5">
+            <div class="method-card" onclick="selectMethod(this, 'bank')">
+              <img src="/images/vietinbank.png" alt="Vietinbank" class="logo" height="85">
+              <h4 class="fw-bold text-primary mt-3">Chuyển khoản Vietinbank</h4>
+              <div class="account-number">1038 729 468</div>
+              <p class="text-muted mb-2">
+                Ngân hàng: <strong class="text-primary">Vietinbank chi nhánh Hà Nội</strong><br>
+                Chủ tài khoản: <strong class="text-danger">Đỗ Huy Dũng</strong>
+              </p>
+              <p class="text-success fw-bold mb-4">
+                Nội dung: <span class="text-primary">Họ tên + SĐT</span>
+              </p>
+              <img src="/images/qr-vietinbank.jpg" alt="QR Vietinbank" class="qr-code">
+              <p class="text-success fw-bold fs-5">Quét mã hoặc chuyển thủ công</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Hướng dẫn siêu ấm áp -->
+        <div class="guide-box">
+          <i class="fas fa-circle-info"></i>
+          <h4 class="text-warning fw-bold mb-4 fs-3">
+            Sau khi chuyển khoản xong, bạn chỉ cần:
+          </h4>
+          <p class="fs-4 mb-3">
+            Gửi ảnh biên lai về <strong class="text-danger">Zalo: 0356 484 203</strong><br>
+            hoặc nhắn tin trực tiếp cho MindCare
+          </p>
+          <p class="text-success fw-bold fs-3">
+            Phòng tư vấn sẽ được mở ngay lập tức trong vòng 3–5 phút<br>
+            Bác sĩ đang chờ bạn với một trái tim rộng mở
+          </p>
+        </div>
+
+        <!-- Nút hoàn tất -->
+        <div class="text-center mt-5">
+          <button class="btn btn-complete" onclick="completePayment()">
+            Tôi đã chuyển khoản xong • Mở phòng tư vấn ngay
+          </button>
+        </div>
+
+        <div class="text-center mt-4">
+          <p class="text-muted fs-5">
+            Giao dịch được bảo mật tuyệt đối • MindCare không lưu bất kỳ thông tin ngân hàng nào
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/include.js"></script>
+  <script>
+    function selectMethod(element, type) {
+      document.querySelectorAll('.method-card').forEach(card => card.classList.remove('selected'));
+      element.classList.add('selected');
+    }
+
+    function completePayment() {
+      const name = localStorage.getItem('userName') || 'bạn';
+      
+      // Hiệu ứng cảm xúc
+      document.body.style.transition = 'all 1s';
+      document.body.style.background = 'linear-gradient(135deg, #fef3c7, #fde68a, #fecaca)';
+      
+      setTimeout(() => {
+        alert(`Cảm ơn ${name} rất nhiều vì đã tin tưởng MindCare ❤️\n\n` +
+              `Chúng tôi đã nhận được thông báo thanh toán của bạn!\n\n` +
+              `Vui lòng gửi biên lai qua Zalo: 0356 484 203\n` +
+              `Phòng tư vấn sẽ được mở ngay lập tức trong vòng 3–5 phút\n\n` +
+              `Bác sĩ đang chờ bạn với tất cả sự ấm áp và thấu hiểu...`);
+        
+        setTimeout(() => {
+          window.location.href = '/call.html?status=paid';
+        }, 2000);
+      }, 800);
+    }
+  </script>
+</body>
+</html>

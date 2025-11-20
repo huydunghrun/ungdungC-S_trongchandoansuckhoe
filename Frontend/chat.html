@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chat với AI - MindCare</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet"/>
+  <link href="/css/modern.css" rel="stylesheet"/>
+  <link href="/css/animation.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --ai: #8b5cf6;
+      --user: #3b82f6;
+      --bg: #f8f9ff;
+      --bubble-ai: #e9d5ff;
+      --bubble-user: #dbeafe;
+    }
+    body {
+      background: linear-gradient(135deg, #f3e8ff 0%, #dbeafe 100%);
+      min-height: 100vh;
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+    }
+    .chat-header {
+      background: linear-gradient(135deg, var(--ai), #a78bfa);
+      color: white;
+      border-radius: 24px 24px 0 0;
+      padding: 2.5rem 1.5rem;
+      box-shadow: 0 10px 30px rgba(139,92,246,0.3);
+      text-align: center;
+    }
+    .chat-container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      background: white;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(139,92,246,0.2);
+      height: calc(100vh - 160px);
+      display: flex;
+      flex-direction: column;
+    }
+    #chatBox {
+      flex: 1;
+      padding: 2rem;
+      overflow-y: auto;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      gap: 1.4rem;
+      scroll-behavior: smooth;
+    }
+    .message {
+      max-width: 80%;
+      padding: 1.1rem 1.6rem;
+      border-radius: 20px;
+      line-height: 1.7;
+      position: relative;
+      animation: fadeInUp 0.5s ease;
+      word-wrap: break-word;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    }
+    .user-message {
+      align-self: flex-end;
+      background: var(--bubble-user);
+      color: #1e40af;
+      border-bottom-right-radius: 4px;
+    }
+    .ai-message {
+      align-self: flex-start;
+      background: var(--bubble-ai);
+      color: #4c1d95;
+      border-bottom-left-radius: 4px;
+    }
+    .ai-avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: var(--ai);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      margin-right: 12px;
+      box-shadow: 0 6px 20px rgba(139,92,246,0.3);
+    }
+    .typing {
+      font-style: italic;
+      color: #9333ea;
+      display: flex;
+      align-items: center;
+    }
+    .typing::after {
+      content: '';
+      animation: dots 1.5s infinite;
+    }
+    @keyframes dots {
+      0%, 20% { content: ''; }
+      40% { content: '.'; }
+      60% { content: '..'; }
+      80%, 100% { content: '...'; }
+    }
+    .chat-input-area {
+      background: white;
+      border-top: 1px solid #eee;
+      padding: 1.5rem;
+    }
+    #chatInput {
+      border-radius: 50px;
+      border: 2px solid #ddd;
+      padding: 1rem 1.6rem;
+      font-size: 1.1rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+    }
+    #chatInput:focus {
+      border-color: var(--ai);
+      box-shadow: 0 0 0 4px rgba(139,92,246,0.2);
+    }
+    .btn-send {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--ai), #a78bfa);
+      color: white;
+      border: none;
+      box-shadow: 0 8px 25px rgba(139,92,246,0.4);
+      transition: all 0.3s ease;
+    }
+    .btn-send:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 15px 35px rgba(139,92,246,0.5);
+    }
+    .welcome-message {
+      text-align: center;
+      color: #6b21a8;
+      font-size: 1.2rem;
+      background: rgba(139,92,246,0.12);
+      padding: 2rem 1.5rem;
+      border-radius: 24px;
+      margin-bottom: 1rem;
+      border: 2px dashed rgba(139,92,246,0.3);
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div w3-include-html="/components/sidebar.html"></div>
+
+  <!-- Main Content -->
+  <div class="main-content p-3 p-md-5">
+    <div class="chat-container mx-auto">
+
+      <!-- Header -->
+      <div class="chat-header">
+        <h2 class="fw-bold mb-2">
+          MindCare AI
+        </h2>
+        <p class="mb-0 opacity-90">
+          Tôi luôn ở đây để lắng nghe bạn – 24/7, không phán xét
+        </p>
+      </div>
+
+      <!-- Tin nhắn -->
+      <div id="chatBox">
+        <div class="welcome-message">
+          Chào <span id="user-name" class="fw-bold">bạn</span>!  
+          Hôm nay bạn đang cảm thấy thế nào? Dù vui, buồn hay chỉ muốn tâm sự, mình luôn ở đây lắng nghe bạn một cách chân thành nhất.
+        </div>
+      </div>
+
+      <!-- Input -->
+      <form id="chatForm" class="chat-input-area">
+        <div class="row g-3 align-items-center">
+          <div class="col">
+            <input type="text" id="chatInput" class="form-control" placeholder="Nhập tin nhắn của bạn..." autocomplete="off" required />
+          </div>
+          <div class="col-auto">
+            <button type="submit" class="btn btn-send">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/include.js"></script>
+  <script src="/js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (typeof initPage === 'function') await initPage();
+
+      const userName = localStorage.getItem('userName') || 'bạn';
+      document.getElementById('user-name').textContent = userName;
+
+      const chatBox = document.getElementById('chatBox');
+      const chatForm = document.getElementById('chatForm');
+      const chatInput = document.getElementById('chatInput');
+
+      // Thêm tin nhắn
+      const appendMessage = (sender, text) => {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `d-flex align-items-end gap-3 ${sender === 'user' ? 'flex-row-reverse' : ''}`;
+
+        if (sender === 'ai') {
+          msgDiv.innerHTML = `
+            <div class="ai-avatar">AI</div>
+            <div class="message ai-message">${text}</div>
+          `;
+        } else {
+          msgDiv.innerHTML = `<div class="message user-message">${text}</div>`;
+        }
+
+        chatBox.appendChild(msgDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+        return msgDiv;
+      };
+
+      // Gửi tin nhắn lên backend 5001
+      chatForm.onsubmit = async (e) => {
+        e.preventDefault();
+        const message = chatInput.value.trim();
+        if (!message) return;
+
+        // Tin người dùng
+        appendMessage('user', message);
+        chatInput.value = '';
+
+        // Hiệu ứng đang gõ
+        const typingMsg = appendMessage('ai', `<span class="typing">MindCare AI đang lắng nghe và suy nghĩ cho bạn</span>`);
+
+        try {
+          const token = localStorage.getItem('token');
+          const res = await fetch('http://localhost:5001/api/chat', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ message })
+          });
+
+          const data = await res.json();
+
+          // Xóa "đang gõ"
+          typingMsg.remove();
+
+          if (res.ok) {
+            appendMessage('ai', data.reply || "Mình đang ở đây với bạn ❤️ Hãy tiếp tục chia sẻ nhé...");
+          } else {
+            appendMessage('ai', "Xin lỗi, mình đang gặp chút trục trặc. Bạn thử lại sau vài giây nhé");
+          }
+        } catch (err) {
+          typingMsg.remove();
+          appendMessage('ai', "Không kết nối được với MindCare AI. Bạn đang chạy backend chưa?");
+          console.error(err);
+        }
+      };
+
+      // Focus input khi nhấn bất kỳ phím nào
+      document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter' || document.activeElement === chatInput) return;
+        chatInput.focus();
+      });
+    });
+  </script>
+</body>
+</html>

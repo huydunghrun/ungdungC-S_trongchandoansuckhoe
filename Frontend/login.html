@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Đăng nhập • MindCare – Nơi tâm hồn được chữa lành</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet"/>
+  <link href="/css/animation.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --primary: #6366f1;
+      --secondary: #4f46e5;
+      --success: #10b981;
+      --light: #f0f9ff;
+      --warm: #e0e7ff;
+      --healing: #dbeafe;
+    }
+    body {
+      background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 50%, #dbeafe 100%);
+      min-height: 100vh;
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    body::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%);
+      animation: float 35s infinite linear;
+      pointer-events: none;
+    }
+    @keyframes float {
+      0% { transform: translate(0,0) rotate(0deg); }
+      100% { transform: translate(80px,80px) rotate(360deg); }
+    }
+    .login-container {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 480px;
+      padding: 2rem;
+    }
+    .login-card {
+      background: rgba(255, 255, 255, 0.98);
+      border-radius: 36px;
+      padding: 4rem 3rem;
+      box-shadow: 
+        0 30px 90px rgba(99,102,241,0.3),
+        0 0 0 1px rgba(255,255,255,0.4);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.6);
+      position: relative;
+      overflow: hidden;
+    }
+    .login-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 8px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary), #a78bfa);
+    }
+    .logo-heart {
+      width: 110px;
+      height: 110px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      box-shadow: 0 20px 50px rgba(99,102,241,0.4);
+      animation: pulse 3s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+    .login-header h1 {
+      font-size: 2.8rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.8rem;
+    }
+    .login-header p {
+      font-size: 1.25rem;
+      color: #64748b;
+      margin-bottom: 2rem;
+    }
+    .form-control {
+      border-radius: 20px;
+      padding: 1.3rem 1.6rem;
+      font-size: 1.1rem;
+      border: 2.5px solid #e0e7ff;
+      background: #fafbff;
+      transition: all 0.4s ease;
+    }
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 6px rgba(99,102,241,0.2);
+      background: white;
+    }
+    .input-group-text {
+      background: transparent;
+      border: none;
+      color: var(--primary);
+    }
+    .btn-login {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border: none;
+      border-radius: 60px;
+      padding: 1.3rem;
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: white;
+      box-shadow: 0 20px 50px rgba(99,102,241,0.45);
+      transition: all 0.5s ease;
+      text-transform: none;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-login::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: 0.7s;
+    }
+    .btn-login:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 0 30px 70px rgba(99,102,241,0.55);
+    }
+    .btn-login:hover::before {
+      left: 100%;
+    }
+    .register-link {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    .register-link a {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-decoration: underline;
+      font-weight: 800;
+    }
+    .loading-text {
+      display: none;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container animate-fade-in">
+    <div class="login-card text-center">
+      
+      <!-- Logo & Tiêu đề -->
+      <div class="logo-heart">
+        <i class="fas fa-heart text-white fa-3x"></i>
+      </div>
+      
+      <div class="login-header">
+        <h1>Chào mừng trở lại</h1>
+        <p>MindCare luôn ở đây, sẵn sàng lắng nghe bạn</p>
+      </div>
+
+      <!-- Form đăng nhập -->
+      <form id="loginForm" novalidate>
+        <div class="mb-4">
+          <div class="input-group">
+            <span class="input-group-text">
+              <i class="fas fa-envelope"></i>
+            </span>
+            <input type="email" class="form-control" id="email" placeholder="Email của bạn" required>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <div class="input-group">
+            <span class="input-group-text">
+              <i class="fas fa-lock"></i>
+            </span>
+            <input type="password" class="form-control" id="password" placeholder="Mật khẩu" required>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-login w-100 mb-4">
+          <span class="default-text">
+            Đăng nhập ngay
+          </span>
+          <span class="loading-text">
+            Đang đăng nhập...
+          </span>
+        </button>
+      </form>
+
+      <!-- Divider -->
+      <div class="text-center my-4 text-muted">
+        ─── Hoặc ───
+      </div>
+
+      <!-- Đăng ký -->
+      <div class="register-link">
+        Chưa có tài khoản? 
+        <a href="/register.html">Đăng ký miễn phí ngay</a>
+      </div>
+
+      <!-- Thông báo lỗi -->
+      <div id="errorMessage" class="alert alert-danger mt-4 d-none" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <span></span>
+      </div>
+
+      <!-- Thông báo thành công -->
+      <div id="successMessage" class="alert alert-success mt-4 d-none" role="alert">
+        Đăng nhập thành công! Đang chuyển hướng...
+      </div>
+    </div>
+  </div>
+
+  <!-- Script xử lý đăng nhập -->
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const btn = e.target.querySelector('.btn-login');
+      const defaultText = btn.querySelector('.default-text');
+      const loadingText = btn.querySelector('.loading-text');
+      const errorMsg = document.getElementById('errorMessage');
+      const successMsg = document.getElementById('successMessage');
+
+      // Reset thông báo
+      errorMsg.classList.add('d-none');
+      successMsg.classList.add('d-none');
+
+      // Hiệu ứng loading
+      btn.disabled = true;
+      defaultText.style.display = 'none';
+      loadingText.style.display = 'inline';
+
+      try {
+        const res = await fetch('http://localhost:5001/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.message || 'Đăng nhập thất bại');
+        }
+
+        // Lưu token + thông tin
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('userName', data.user.name || data.user.email.split('@')[0]);
+        localStorage.setItem('userRole', data.user.role || 'patient');
+
+        // Hiển thị thành công
+        successMsg.classList.remove('d-none');
+        
+        setTimeout(() => {
+          window.location.href = data.user.role === 'doctor' ? '/dashboard-doctor.html' : '/index.html';
+        }, 1500);
+
+      } catch (err) {
+        errorMsg.querySelector('span').textContent = err.message;
+        errorMsg.classList.remove('d-none');
+        
+        // Reset button
+        btn.disabled = false;
+        defaultText.style.display = 'inline';
+        loadingText.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

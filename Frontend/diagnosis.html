@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chẩn đoán tâm lý - MindCare</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet"/>
+  <link href="/css/modern.css" rel="stylesheet"/>
+  <link href="/css/animation.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --primary: #ec4899;
+      --secondary: #db2777;
+      --light: #fdf2f8;
+      --warm: #fce7f3;
+      --danger: #ef4444;
+    }
+    body {
+      background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+      min-height: 100vh;
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+    }
+    .diagnosis-header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      border-radius: 32px;
+      padding: 4.5rem 2.5rem;
+      box-shadow: 0 35px 90px rgba(236,72,153,0.4);
+      text-align: center;
+      margin-bottom: 3.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .diagnosis-header::before {
+      content: '';
+      position: absolute;
+      top: -60%; left: -60%;
+      width: 220%; height: 220%;
+      background: radial-gradient(circle, rgba(255,255,255,0.22) 0%, transparent 70%);
+      animation: float 22s infinite linear;
+    }
+    @keyframes float {
+      0% { transform: translate(0,0) rotate(0deg); }
+      100% { transform: translate(50px,50px) rotate(360deg); }
+    }
+    .question-card {
+      background: white;
+      border-radius: 28px;
+      padding: 2.4rem;
+      margin-bottom: 2.2rem;
+      box-shadow: 0 18px 50px rgba(0,0,0,0.09);
+      transition: all 0.4s ease;
+      border-left: 7px solid var(--primary);
+      position: relative;
+      overflow: hidden;
+    }
+    .question-card:hover {
+      transform: translateY(-12px);
+      box-shadow: 0 30px 70px rgba(236,72,153,0.22);
+    }
+    .question-number {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 1.5rem;
+      box-shadow: 0 10px 30px rgba(236,72,153,0.5);
+    }
+    .form-select {
+      border-radius: 18px;
+      padding: 1.1rem 1.6rem;
+      font-size: 1.15rem;
+      border: 2.5px solid #e2e8f0;
+      transition: all 0.4s ease;
+    }
+    .form-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 6px rgba(236,72,153,0.25);
+    }
+    .btn-submit {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border: none;
+      border-radius: 60px;
+      padding: 1.4rem 5rem;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: white;
+      box-shadow: 0 20px 50px rgba(236,72,153,0.45);
+      transition: all 0.4s ease;
+      text-transform: none;
+    }
+    .btn-submit:hover {
+      transform: translateY(-10px) scale(1.05);
+      box-shadow: 0 30px 70px rgba(236,72,153,0.55);
+    }
+    .result-card {
+      border-radius: 36px;
+      padding: 4rem;
+      margin-top: 3.5rem;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.15);
+      text-align: center;
+      display: none;
+      background: white;
+      border: 4px solid transparent;
+      animation: fadeInUp 0.8s ease;
+    }
+    .score-circle {
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 2.5rem;
+      font-size: 4rem;
+      font-weight: 900;
+      color: white;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+      text-shadow: 0 6px 20px rgba(0,0,0,0.5);
+    }
+    .level-normal { background: linear-gradient(135deg, #10b981, #34d399); }
+    .level-mild { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+    .level-moderate { background: linear-gradient(135deg, #fb923c, #f97316); }
+    .level-severe { background: linear-gradient(135deg, #ef4444, #dc2626); }
+    .note-box {
+      background: linear-gradient(135deg, #fffbeb, #fef3c7);
+      border-left: 8px solid #f59e0b;
+      border-radius: 24px;
+      padding: 2.5rem;
+      margin-top: 4rem;
+      font-size: 1.1rem;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar Patient -->
+  <div w3-include-html="/components/sidebar.html"></div>
+
+  <!-- Main Content -->
+  <div class="main-content p-4 p-md-5">
+    <div class="container">
+
+      <!-- Header -->
+      <div class="diagnosis-header">
+        <h1 class="display-4 fw-bold mb-4">
+          Chẩn đoán sức khỏe tâm lý
+        </h1>
+        <p class="lead mb-0 opacity-95 fs-3">
+          PHQ-9 (Trầm cảm) & GAD-7 (Lo âu) – Công cụ sàng lọc chuẩn quốc tế
+        </p>
+      </div>
+
+      <!-- Instructions -->
+      <div class="alert alert-soft-info text-center fs-5 mb-5 rounded-4 py-4 shadow-sm">
+        Hãy chọn mức độ phù hợp nhất với bạn trong <strong>2 tuần vừa qua</strong>
+      </div>
+
+      <form id="extendedDiagnosis">
+        <div id="questions-container" class="row g-4"></div>
+
+        <div class="text-center mt-5">
+          <button type="submit" class="btn btn-submit shadow-lg">
+            Xem kết quả ngay
+          </button>
+        </div>
+      </form>
+
+      <!-- Result Area -->
+      <div id="result" class="result-card"></div>
+
+      <!-- Important Note -->
+      <div class="note-box">
+        <h5 class="text-warning fw-bold mb-4 fs-4">
+          Lưu ý rất quan trọng
+        </h5>
+        <p class="mb-4 fs-5">
+          Đây là công cụ <strong>sàng lọc ban đầu</strong>, không thay thế chẩn đoán của bác sĩ tâm thần.
+        </p>
+        <p class="mb-0 text-danger fw-bold fs-4">
+          Nếu bạn có ý nghĩ tự hại hoặc cảm thấy tuyệt vọng kéo dài → 
+          <a href="appointment.html" class="text-danger text-decoration-underline fw-bolder">
+            Đặt lịch tư vấn NGAY LẬP TỨC
+          </a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/include.js"></script>
+  <script src="/js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (typeof initPage === 'function') await initPage();
+
+      const questionsContainer = document.getElementById('questions-container');
+      const resultDiv = document.getElementById('result');
+
+      const questions = [
+        // PHQ-9
+        "Cảm thấy ít hứng thú hoặc không vui khi làm mọi việc",
+        "Cảm thấy chán nản, trầm cảm hoặc tuyệt vọng",
+        "Khó ngủ, ngủ không yên giấc hoặc ngủ quá nhiều",
+        "Cảm thấy mệt mỏi hoặc không có năng lượng",
+        "Ăn ít hoặc ăn quá nhiều",
+        "Cảm thấy bản thân kém cỏi hoặc thất bại",
+        "Khó tập trung (ví dụ: khi đọc sách, xem TV)",
+        "Di chuyển hoặc nói chậm đến mức người khác nhận thấy, hoặc ngược lại: bồn chồn, không ngồi yên",
+        "Có ý nghĩ rằng mình thà chết còn hơn hoặc tự làm hại bản thân",
+        // GAD-7
+        "Cảm thấy lo lắng, bồn chồn hoặc căng thẳng",
+        "Không thể ngừng hoặc kiểm soát được sự lo lắng",
+        "Lo lắng quá mức về nhiều thứ khác nhau",
+        "Khó thư giãn",
+        "Bồn chồn đến mức khó ngồi yên",
+        "Dễ cáu gắt hoặc nổi nóng",
+        "Cảm thấy sợ hãi như thể có điều gì đó kinh khủng sắp xảy ra"
+      ];
+
+      questions.forEach((q, i) => {
+        const col = document.createElement('div');
+        col.className = 'col-12';
+        col.innerHTML = `
+          <div class="question-card">
+            <div class="d-flex align-items-start gap-4">
+              <div class="question-number flex-shrink-0">${i + 1}</div>
+              <div class="flex-grow-1">
+                <h5 class="fw-bold mb-4 text-dark">${q}</h5>
+                <select class="form-select form-select-lg" name="q${i}" required>
+                  <option value="" disabled selected>Chọn mức độ của bạn...</option>
+                  <option value="0">Không hề (0 ngày)</option>
+                  <option value="1">Vài ngày (1-7 ngày)</option>
+                  <option value="2">Hơn nửa thời gian (8-14 ngày)</option>
+                  <option value="3">Gần như mỗi ngày</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        `;
+        questionsContainer.appendChild(col);
+      });
+
+      document.getElementById('extendedDiagnosis').onsubmit = async (e) => {
+        e.preventDefault();
+
+        resultDiv.innerHTML = `
+          <div class="text-center py-5">
+            <div class="spinner-border text-danger" style="width: 6rem; height: 6rem;"></div>
+            <h2 class="mt-5 text-danger fw-bold">MindCare đang phân tích sâu kết quả của bạn...</h2>
+            <p class="text-muted fs-5">Chỉ mất vài giây thôi, bạn đã làm rất tốt khi đến đây</p>
+          </div>`;
+        resultDiv.style.display = 'block';
+        resultDiv.scrollIntoView({ behavior: 'smooth' });
+
+        let phq9 = 0, gad7 = 0;
+        for (let i = 0; i < 9; i++) {
+          phq9 += parseInt(document.querySelector(`select[name="q${i}"]`).value || 0);
+        }
+        for (let i = 9; i < 16; i++) {
+          gad7 += parseInt(document.querySelector(`select[name="q${i}"]`).value || 0);
+        }
+
+        // Gửi kết quả lên backend
+        try {
+          const token = localStorage.getItem('token');
+          await fetch('http://localhost:5001/api/diagnosis', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ phq9, gad7, date: new Date() })
+          });
+        } catch (err) {
+          console.warn('Backend chưa chạy, kết quả chỉ lưu local');
+        }
+
+        const getLevel = (score, type) => {
+          if (type === 'phq9') {
+            if (score <= 4)  return { level: "Bình thường", color: "level-normal", advice: "Tuyệt vời! Bạn đang rất ổn định và khỏe mạnh về tinh thần" };
+            if (score <= 9)  return { level: "Trầm cảm nhẹ", color: "level-mild", advice: "Bạn có dấu hiệu nhẹ. Hãy nghỉ ngơi, chia sẻ và yêu thương bản thân nhiều hơn nhé" };
+            if (score <= 14) return { level: "Trầm cảm trung bình", color: "level-moderate", advice: "Bạn cần được hỗ trợ chuyên nghiệp sớm. Đừng ngại đặt lịch tư vấn" };
+            return { level: "Trầm cảm nặng", color: "level-severe", advice: "Rất cần gặp bác sĩ tâm lý ngay lập tức. Bạn không cô đơn, MindCare luôn ở đây" };
+          } else {
+            if (score <= 4)  return { level: "Không lo âu", color: "level-normal", advice: "Tuyệt vời! Bạn đang kiểm soát cảm xúc rất tốt" };
+            if (score <= 9)  return { level: "Lo âu nhẹ", color: "level-mild", advice: "Bạn đang có chút lo lắng. Hãy thử thiền, hít thở sâu" };
+            if (score <= 14) return { level: "Lo âu trung bình", color: "level-moderate", advice: "Cần được hỗ trợ chuyên môn để giảm lo âu" };
+            return { level: "Lo âu nặng", color: "level-severe", advice: "Cần gặp chuyên gia tâm lý ngay. Bạn xứng đáng được bình yên" };
+          }
+        };
+
+        const phq = getLevel(phq9, 'phq9');
+        const gad = getLevel(gad7, 'gad7');
+
+        setTimeout(() => {
+          resultDiv.innerHTML = `
+            <h2 class="fw-bold mb-5 text-danger">Kết quả sàng lọc của bạn</h2>
+            <div class="row g-5 justify-content-center">
+              <div class="col-md-5">
+                <h4 class="text-primary fw-bold mb-4">PHQ-9 - Trầm cảm</h4>
+                <div class="score-circle ${phq.color}">${phq9}<small class="fs-6 d-block">/27 điểm</small></div>
+                <h3 class="mt-4 fw-bold text-danger">${phq.level}</h3>
+                <p class="lead mt-3">${phq.advice}</p>
+              </div>
+              <div class="col-md-5">
+                <h4 class="text-warning fw-bold mb-4">GAD-7 - Lo âu</h4>
+                <div class="score-circle ${gad.color}">${gad7}<small class="fs-6 d-block">/21 điểm</small></div>
+                <h3 class="mt-4 fw-bold text-danger">${gad.level}</h3>
+                <p class="lead mt-3">${gad.advice}</p>
+              </div>
+            </div>
+            <div class="mt-5">
+              <a href="appointment.html" class="btn btn-danger btn-lg rounded-pill px-5 shadow-lg me-3">
+                Đặt lịch tư vấn ngay
+              </a>
+              <a href="history.html" class="btn btn-outline-dark btn-lg rounded-pill px-4">
+                Xem lịch sử chẩn đoán
+              </a>
+            </div>
+          `;
+        }, 1800);
+      };
+    });
+  </script>
+</body>
+</html>
